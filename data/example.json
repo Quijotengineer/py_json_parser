@@ -1,0 +1,80 @@
+{
+    "application": {
+      "env": "egdp-dev",
+      "email": "LodgingCoreAlgorithmsEngineers@expedia.com",
+      "log_folder": "log"
+    },
+    "monitoring": {
+      "flight_recorder_config": {
+        "url": "http://frmg.us-east-1.eglocal.exp-dw.net:8086/write",
+        "measurement_series": "core-algorithms-apps-dev",
+        "aws_account_id": "672016901104",
+        "region": "us-east-1"
+      }
+    },
+    "s3": {
+      "output": {
+        "base_output": "s3://egdp-analytics-marketplace-and-yield-us-east-1/ecap",
+        "master_zone_base_output": "",
+        "etl": {
+          "base": "etl",
+          "output": "output",
+          "target": "target"
+        },
+        "scoring": {
+          "base": "scoring",
+          "output": "output",
+          "temporary": "temporary"
+        }
+      },
+      "input": {
+        "dart_shpm_path": "s3://apiary-112945290135-us-east-1-stg-supply/supply-insights/lodging-pricing/dart/etl/3.2.10/shpm",
+        "shpm_eligible_tpid": "s3://lodging-pricing-bigdata/cra-tpid-posa-lob/tpid-posa-lob.csv",
+        "target": "s3://egdp-analytics-marketplace-and-yield-us-east-1/lodging-pricing/prod/eCap/config/target_definition.csv/"
+      }
+    },
+    "hive": {
+      "input": {
+        "lodging_profile_eg": "supply.lodging_profile_eg",
+        "lodging_rm_trans_fact": "egdp_classic_booking.lodg_rm_trans_fact",
+        "meta_bml": "supply.lodging_competitive_intelligence_eg_metatometa_comparison_v1",
+        "tpid_dim": "egdp_classic_booking.tpid_dim",
+        "lodg_property_dim": "egdp_classic_booking.lodg_property_dim",
+        "geo_country_dim": "bexg_prod_dm.geo_country_dim"
+      }
+    },
+    "application_params": {
+      "etl": {
+        "end_day_shift": 2,
+        "rolling_period": 21,
+        "confidence_interval": 0.1,
+        "bw1": "case when bw between 0 and 7 then '0-7' when bw between 8 and 30 then '8-30' else '31-na' end",
+        "bw2": "case when bw between 0 and 7 then '0-7' else '8-na' end"
+      },
+      "scoring": {
+        "granularities": [
+          [
+            "bw_rg1",
+            "bw_rg2",
+            "POSA_bucket1",
+            "POSA_bucket2"
+          ],
+          [
+            "bw_rg2",
+            "POSA_bucket1",
+            "POSA_bucket2"
+          ],
+          [
+            "bw_rg2",
+            "POSA_bucket2"
+          ]
+        ],
+        "confidence_interval": 0.1,
+        "kernel": 1
+      }
+    },
+    "send_notification": {
+      "no_of_tries": 2,
+      "pricing_ops_s3_endpoint": ""
+    }
+  }
